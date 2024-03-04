@@ -1,0 +1,11 @@
+To set up the project in back end
+
+1. npm init - to initalse a json.package file
+2. create index.js file
+3. npm i express - to instal express in our project
+4. import express in index.js file
+5. Create an app using express project
+6. write a basic routing using app
+7. npm i-g nodemon 
+8. run command nodemon in cmd not at powershell
+9. Add type module in package.json to use ES6 import
