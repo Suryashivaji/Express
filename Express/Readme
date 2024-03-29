@@ -9,3 +9,12 @@ To set up the project in back end
 7. npm i-g nodemon 
 8. run command nodemon in cmd not at powershell
 9. Add type module in package.json to use ES6 import
+
+## mongoose instaling steps
+
+1.npm install mongoose
+2. install dote env file in terminal
+3. importing dotenv and confige the env in index.js and user file
+4.create a new file like modles to connect the mongoose to other file
+5.do some simple validation and start the modles process in model user
+6.rearrange the curd using mongoose

@@ -1,20 +1,14 @@
-import {findIndex} from '../common/helper.js'
-const user =[{
-  id:1,
-  name:"surya",
-  email:"surya@gamil.com",
-  passwors:"123",
-  status:true,
-  role:"user",
-}
-]
+import UserModel from '../models/user.js'
+import dotenv from 'dotenv'
 
-const getAllUser =(req,res)=>{
+dotenv.config()
+const getAllUser =async(req,res)=>{ 
   try {
+    let users = await UserModel.find()
 
     res.status(200).send({
       massage:"Data fecthed sucessfully",
-      user
+      users
     })
     
   } catch (error) {
@@ -22,40 +16,74 @@ const getAllUser =(req,res)=>{
   }
 }
 
-const addUsers=(req,res)=>{
+const addUsers=async(req,res)=>{ 
   try {
-  let id = Array.length?user[user.length-1].id+1:1
-  req.body.id=id
-  user.push(req.body)
+
+  const user= await UserModel.findOne({email:req.body.email})
+
+if(!user)
+{
+ //if email is not found create a email then create new users
+  let newUser =await UserModel.create(req.body)
+  res.status(200).send({
+    massage:"User Added sucessfully"
+   
+  })
+
+}else{
+ 
+  res.status(400).send({
+  massage:`user with ${req.body.email} is already exist` 
+
+  })
+
+}
+ 
+  } catch (error) {
+    res.status(500).send({
+      massage:"internel surver error",
+      error
+     
+    })
+  }
+}
+
+const getUserBYId =async(req,res)=>{ 
+ try {
+  
+    let users = await UserModel.findById({_id:req.params.id})
 
     res.status(200).send({
-      massage:"User Added sucessfully",
-     
+      massage:"Data fecthed sucessfully",
+      users
     })
     
   } catch (error) {
-    res.status(500).send({
-      massage:"internel surver error",
-     
-    })
+    
+
   }
 }
 
-const getUserBYId =(req,res)=>{
+const  editUserById =async(req,res)=>{
   try {
 
-    const {id} =req.params
-    let index = findIndex(user,id)
-    if(index!==-1)
-    {
-      res.status(200).send({
-        massage:"Data fecthed sucessfully",
-        user:user[index]
-      })
+    let user = await UserModel.findById({_id:req.params.id})
+if(user){
+            
+  user.name=req.body.name
+  user.email=req.body.email
+  user.password=req.body.password
+  user.status=res.body.status
+  user.role=res.body.role
+  
+user.save()
 
-    } else{
+
+}
+   else{
       res.status(400).send({
         massage:"Inviled user id",
+
        
       })
     }
@@ -64,63 +92,31 @@ const getUserBYId =(req,res)=>{
   } catch (error) {
     res.status(500).send({
       massage:"internel surver error",
+      error:error.massage
      
     })
   }
 }
-const  editUserById =(req,res)=>{
+const deletUserById=async(req,res)=>{
   try {
+    let user = await UserModel.findById({_id:req.params.id})
 
-    const {id} =req.params
-    let index = findIndex(user,id)
-    if(index!==-1)
-    {
+    if(user){
 
-      req.body.id=Number(id)
-      user.splice(index,1,req.body)
-
-
+      await UserModel.deleteOne({_id:req.params.id})
       res.status(200).send({
-        massage:"User Edited sucessfully",
-       
+        message:"user deleted successfully"
       })
 
-    } else{
+    }
+
+  else{
       res.status(400).send({
         massage:"Inviled user id",
        
       })
     }
 
-    
-  } catch (error) {
-    res.status(500).send({
-      massage:"internel surver error",
-     
-    })
-  }
-}
-const deletUserById=(req,res)=>{
-  try {
-
-    const {id} =req.params
-    let index = findIndex(user,id)
-    if(index!==-1)
-    {
-      user.splice(index,1)
-      res.status(200).send({
-        massage:"User Deleted sucessfully",
-     
-      })
-
-    } else{
-      res.status(400).send({
-        massage:"Inviled user id",
-       
-      })
-    }
-
-    
   } catch (error) {
     res.status(500).send({
       massage:"internel surver error",
